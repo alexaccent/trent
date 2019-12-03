@@ -18,6 +18,12 @@ public class Country {
         this.capital = capital;
     }
 
+    public Country update(Country country) {
+        this.name = country.name;
+        this.capital = country.capital;
+        return this;
+    }
+
     public String getName() {
         return name;
     }
