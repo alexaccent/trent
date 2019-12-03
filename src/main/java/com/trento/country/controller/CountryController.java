@@ -5,9 +5,7 @@ import com.trento.country.exceptions.NotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("country")
@@ -24,17 +22,36 @@ public class CountryController {
         return countriesList;
     }
 
-    @GetMapping("/{id}")
-    public Country getCountryList(@PathVariable String id) {
+    @GetMapping("{id}")
+    public Country getOne(@PathVariable int id) {
+        return getCountry(id);
+    }
 
-        Country outCountry = countriesList.stream()
+    @PostMapping
+    public Country create(@RequestBody Country country) {
+        countriesList.add(country);
+        return country;
+    }
+
+    @PutMapping("{id}")
+    public Country update(@PathVariable int id,@RequestBody Country country) {
+        Country countryFromList = getCountry(id);
+        countryFromList.update(country);
+        return countryFromList;
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable int id) {
+        Country country = getCountry(id);
+        countriesList.remove(country);
+    }
+
+    private Country getCountry(@PathVariable int id) {
+        return countriesList.stream()
                 .filter(country -> {
-                    System.out.println("Country id: " + country.getId());
-                    int idInt = Integer. parseInt(id);
-                    return country.getId() == idInt;
+                    return country.getId() == id;
                 })
                 .findFirst()
                 .orElseThrow(NotFoundException::new);
-        return outCountry;
     }
 }
